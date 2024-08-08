@@ -6,14 +6,14 @@ class FlowLogParser {
     private static final Logger logger = Logger.getLogger(FlowLogParser.class.getName());
 
     // usage
-	// 1st arg: flow record log plain text file
-	// 2nd arg: tag look up table plain text file
+    // 1st arg: flow record log plain text file
+    // 2nd arg: tag look up table plain text file
     public static void main(String[] args) {
-		logger.info("Starting FlowLogParser");
-		if(args.length < 2){
-			logger.warning("Please provide the flow log and tag look up files");
-			return;
-		}
+        logger.info("Starting FlowLogParser");
+	if(args.length < 2){
+	    logger.warning("Please provide the flow log and tag look up files");
+	    return;
+	}
         parse(args[0], buildTagMap(args[1]));
     }
     
@@ -25,7 +25,7 @@ class FlowLogParser {
 
             String str;
             while ((str=br.readLine()) != null) {
-				// Assume the flow log file format based on https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html
+		// Assume the flow log file format based on https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html
                 String[] log = str.split("[ ,\t]+"); // assume the log field is delimited by comma
                 String dstport = log[6]; 
                 String protocol = Constants.PROTOCOL_MAP.get(Integer.parseInt(log[7]));
@@ -44,11 +44,11 @@ class FlowLogParser {
                 combinationCountMap.get(protocol).put(dstport, combinationCountMap.get(protocol).getOrDefault(dstport, 0)+1);
             }
 			
-			writeToTagCountFile(tagCountMap);
+	    writeToTagCountFile(tagCountMap);
 			
-			writeToCombinationCountFile(combinationCountMap);
+	    writeToCombinationCountFile(combinationCountMap);
 			
-			logger.info("FlowLogParser completed.")
+	    logger.info("FlowLogParser completed.")
         }catch(FileNotFoundException ex){
             ex.printStackTrace();
         }catch(Exception ex) {
@@ -70,7 +70,7 @@ class FlowLogParser {
                 }
                 tagMap.get(protocol).put(dstport, tag);
             }
-		}catch(FileNotFoundException ex){
+	}catch(FileNotFoundException ex){
             ex.printStackTrace();
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -78,35 +78,35 @@ class FlowLogParser {
         return tagMap;
     }
 	
-	public static void writeToTagCountFile(Map<String, Integer> tagCountMap){
-		try{
-			BufferedWriter tag_count_writer = new BufferedWriter(new FileWriter("tagCount.txt"));
-		    tag_count_writer.write("Tag"+"\t"+"Count" + "\n");
-		    for(Map.Entry<String, Integer> entry : tagCountMap.entrySet()){
+    public static void writeToTagCountFile(Map<String, Integer> tagCountMap){
+	try{
+	    BufferedWriter tag_count_writer = new BufferedWriter(new FileWriter("tagCount.txt"));
+	    tag_count_writer.write("Tag"+"\t"+"Count" + "\n");
+	    for(Map.Entry<String, Integer> entry : tagCountMap.entrySet()){
                 tag_count_writer.write(entry.getKey()+"\t"+entry.getValue() + "\n");
             }
             tag_count_writer.close();
-		}catch(IOException ex){
-			ex.printStackTrace();
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
+	}catch(IOException ex){
+	    ex.printStackTrace();
+	}catch(Exception ex){
+	    ex.printStackTrace();
 	}
+    }
 	
-	public static void writeToCombinationCountFile(Map<String, Map<String, Integer>> combinationCountMap){
-		try{
-		    BufferedWriter combination_count_writer = new BufferedWriter(new FileWriter("combinationCount.txt"));
-		    combination_count_writer.write("Port"+"\t"+"Protocol"+"\t"+ "Count" + "\n");        
+    public static void writeToCombinationCountFile(Map<String, Map<String, Integer>> combinationCountMap){
+	try{
+	    BufferedWriter combination_count_writer = new BufferedWriter(new FileWriter("combinationCount.txt"));
+	    combination_count_writer.write("Port"+"\t"+"Protocol"+"\t"+ "Count" + "\n");        
             for(Map.Entry<String, Map<String, Integer>>entry : combinationCountMap.entrySet()){
-			    for(Map.Entry<String, Integer>item : entry.getValue().entrySet()){
-			        combination_count_writer.write(entry.getKey()+"\t"+item.getKey()+"\t"+item.getValue() + "\n");
-			    }
+		for(Map.Entry<String, Integer>item : entry.getValue().entrySet()){
+		    combination_count_writer.write(entry.getKey()+"\t"+item.getKey()+"\t"+item.getValue() + "\n");
+	        }
             }
             combination_count_writer.close();
-		}catch(IOException ex){
-			ex.printStackTrace();
-		}catch(Exception ex){
-			ex.printStackTrace();
-		}
+	}catch(IOException ex){
+	    ex.printStackTrace();
+	}catch(Exception ex){
+	    ex.printStackTrace();
 	}
+    }
 }
