@@ -61,3 +61,10 @@ combinationCount.txt
 443.  tcp       1
 
 ## Test
+
+Tested already with sample-flow-logs.txt (larger than 10MB) and lookup_table.txt(more than 10k lines) and it works well.
+
+javac FlowLogParser.java
+
+java FlowLogParser  sample-flow-logs.txt lookup_table.txt
+
