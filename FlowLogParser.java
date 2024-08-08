@@ -1,5 +1,3 @@
-// Online Java Compiler
-// Use this editor to write, compile and run your Java code online
 import java.io.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -27,13 +25,13 @@ class FlowLogParser {
             BufferedWriter combination_count_writer = new BufferedWriter(new FileWriter(
                     "combinationCount.txt"));
             Map<String, Integer> tagCountMap = new HashMap<>();
-            Map<String, Map<String, Integer>> combinationCountMap = new HashMap<>();
+            Map<String, Map<String, Integer>> combinationCountMap = new HashMap<>(); //Use nested map to save space multiple keys
 
             String str;
             while ((str=br.readLine()) != null) {
-                // do something with each line
-                String[] log = str.split("[ ,\t]+"); // assume the log field is delimieted by comma
-                String dstport = log[6];
+				// Assume the flow log file format based on https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html
+                String[] log = str.split("[ ,\t]+"); // assume the log field is delimited by comma
+                String dstport = log[6]; 
                 String protocol = Constants.PROTOCOL_MAP.get(Integer.parseInt(log[7]));
                 
                 String tag = "unTagged";
@@ -69,12 +67,11 @@ class FlowLogParser {
     }
     
     public static Map<String, Map<String, String>> buildTagMap(String file) {
-        Map<String, Map<String, String>> tagMap = new HashMap<>();
+        Map<String, Map<String, String>> tagMap = new HashMap<>(); //Store the tagMap in a nested map to save space for multiple keys(dstport, protocol)
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String str;
             while ((str=br.readLine()) != null) {
-                // do something with each line
-                String[] row = str.split(",");
+                String[] row = str.split("[ ,\t]+");
                 String dstport = row[0];
                 String protocol = row[1];
                 String tag = row[2];
@@ -83,6 +80,8 @@ class FlowLogParser {
                 }
                 tagMap.get(protocol).put(dstport, tag);
             }
+		}catch(FileNotFoundException ex){
+            ex.printStackTrace();
         } catch(Exception ex) {
             ex.printStackTrace();
         }
