@@ -68,3 +68,13 @@ javac FlowLogParser.java
 
 java FlowLogParser  sample-flow-logs.txt lookup_table.txt
 
+## Analytics
+
+The parser class assume follows the standard format of example input above and no empty or blank lines or lines with wrong format
+
+The parser class assume you compile and run the file in latest JDK environment
+
+The parser class enable BufferredReader to iterate the log file line by line to update the map efficiently to save memory instead of storing them all in advance 
+
+The parser class use nested map to store cominbation and lookup tag map to save storage.
+
